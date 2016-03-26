@@ -1,0 +1,15 @@
+Set up to store in sqlite
+then pull data from sqlite
+categories should scheduled, maintenance, etc., all with light and shorter boxes
+then run time or not with taller red boxes
+
+So...
+- Device
+- Start time
+- End time
+- event type
+- event details
+
+I really need to get this into github
+
+How do I build up tests in here?
