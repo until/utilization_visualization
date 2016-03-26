@@ -1,2 +1,0 @@
-Tecan 1	7/24/2015 10:44:26	7/24/2015 11:14:35	Runtime	CompleteWalkAway_SingleElutionAliquot_beta" (lines 1 to 143)
-Tecan 1	7/24/2015 11:28	7/24/2015 11:38:32	Runtime	Step1_OD_Normalization" (lines 1 to 5)
