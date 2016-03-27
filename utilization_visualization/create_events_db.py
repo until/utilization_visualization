@@ -2,16 +2,13 @@ import sqlite3
 import os
 
 
-def add_event_types(cur):
-    cur.execute("INSERT INTO devices (device) VALUES ('Tecan 1')")
-    cur.execute("INSERT INTO devices (device) VALUES ('Tecan 2')")
-    cur.execute("INSERT INTO devices (device) VALUES ('Tecan 3')")
-    cur.execute("INSERT INTO devices (device) VALUES ('Bravo 1')")
+def _add_event_types(cur):
 
-def add_devices(cur):
-    cur.execute("INSERT INTO event_types (event_type) VALUES ('Scheduled')")
-    cur.execute("INSERT INTO event_types (event_type) VALUES ('Maintenance')")
-    cur.execute("INSERT INTO event_types (event_type) VALUES ('Runtime')")
+    event_types = ['Runtime', 'Offline', 'Intermittent', 'Busy']
+
+    for event_type in event_types:
+        cur.execute('INSERT OR IGNORE INTO event_types(event_type) VALUES(?)', (event_type.strip(),))
+
 
 def create_db(cur):
     cur.execute('''
@@ -28,19 +25,18 @@ def create_db(cur):
     cur.execute('CREATE TABLE if not EXISTS devices(id INTEGER PRIMARY KEY AUTOINCREMENT, device TEXT, UNIQUE(device))')
     cur.execute('CREATE TABLE if not EXISTS event_types(id INTEGER PRIMARY KEY AUTOINCREMENT, event_type TEXT, UNIQUE(event_type))')
 
-def main():
+    _add_event_types(cur)
 
-    os.remove('event_log.db')
 
-    con = sqlite3.connect('event_log.db')
+if __name__ == "__main__":
+
+    if os.path.exists(r'..\test\test_event_log.db'):
+        os.remove(r'..\test\test_event_log.db')
+
+    con = sqlite3.connect(r'..\test\test_event_log.db')
     cur = con.cursor()
 
     create_db(cur)
-    # add_devices(cur)
-    # add_event_types(cur)
 
     con.commit()
     cur.close()
-
-
-main()
