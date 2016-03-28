@@ -154,18 +154,20 @@ if __name__ == "__main__":
         event = Event(*data)
         events_by_day.extend(split_event(event, 'day'))
         events_by_week.extend(split_event(event, 'week'))
-        devices.append(event.device)
-        weeks.extend([x.beginning_of_week for x in events_by_day])
+
+    devices = list(set([x.device for x in events_by_week]))
+    weeks = list(set([x.beginning_of_week for x in events_by_day]))
 
     path = r'../test/images/'
 
-    # for device in list(set(devices)):
-    #     for week in list(set(weeks)):
-    #         event_subset = []
-    #         for event in events_by_day:
-    #             if event.device == device and event.beginning_of_week == week:
-    #                 event_subset.append(event)
-    #         generate_figure_for_one_week(event_subset, path)
+    for device in list(set(devices)):
+        for week in list(set(weeks)):
+            event_subset = []
+            for event in events_by_day:
+                if event.device == device and event.beginning_of_week == week:
+                    event_subset.append(event)
+            if event_subset:
+                generate_figure_for_one_week(event_subset, path)
 
     for device in list(set(devices)):
         event_subset = []

@@ -17,8 +17,6 @@ def generate_figures():
 
     events_by_day = []
     events_by_week = []
-    # devices = []
-    # weeks = []
     for data in cur.fetchall():
         event = Event(*data)
         events_by_day.extend(split_event(event, 'day'))
@@ -30,8 +28,7 @@ def generate_figures():
     path = r'../test/images/'
 
     print 'Generating figures for one week...'
-    # for device in list(set(devices)):
-    for device in ['Tecan EVO_4']:
+    for device in list(set(devices)):
         for week in list(set(weeks)):
             event_subset = []
             for event in events_by_day:
@@ -44,18 +41,17 @@ def generate_figures():
                 print len(event_subset)
                 generate_figure_for_one_week(event_subset, path)
 
-    # print 'Generating figures for all weeks...'
-    # for device in list(set(devices)):
-    #     event_subset = []
-    #     for event in events_by_week:
-    #         if event.device == device:
-    #             event_subset.append(event)
-    #     print device
-    #     generate_figure_for_all_weeks(event_subset, path)
+    print 'Generating figures for all weeks...'
+    for device in list(set(devices)):
+        event_subset = []
+        for event in events_by_week:
+            if event.device == device:
+                event_subset.append(event)
+        print device
+        generate_figure_for_all_weeks(event_subset, path)
 
     con.commit()
     cur.close()
-
 
 
 def store_data():
@@ -67,7 +63,6 @@ def store_data():
         for line in in_file:
             event = line.rstrip('\n').split('\t')
             events.append(event)
-
 
     if os.path.exists(r'..\test\test_event_log.db'):
         os.remove(r'..\test\test_event_log.db')

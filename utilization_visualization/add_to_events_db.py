@@ -58,8 +58,8 @@ def _check_data(cur, data):
         except ValueError:
             errors.append("The end time '%s' does not use one of the required formats" % event[2])
         try:
-            if not (_format_datetime(event[2]) - _format_datetime(event[1])).total_seconds() > 0:
-                errors.append("The start time '%s' does not precede the end time '%s'" % (event[1], event[2]))
+            if not (_format_datetime(event[2]) - _format_datetime(event[1])).total_seconds() >= 0:
+                errors.append("The end time '%s' precedes the start time '%s'" % (event[2], event[1]))
         except ValueError:
             pass
 
@@ -98,8 +98,11 @@ if __name__ == "__main__":
     event_2 = 'test_device\t1/1/2016 8:00:01\t1/21/2016 9:01:02\ttest_event_type\ttest_event_notes'.split('\t')
     event_3 = 'test_device\t1/6/2016 8:00:01\t1/18/2016 9:01:02\tRuntime\ttest_event_notes'.split('\t')
     event_4 = 'test_device\t1/6/2016 8:00:01\t2/18/2016 9:01:02\tRuntime\ttest_event_notes'.split('\t')
-    event_4 = 'test_device\t1/6/2016 8:00:01\t5/18/2016 9:01:02\ttest_event_type\ttest_event_notes'.split('\t')
-    events = [event_1, event_2, event_3, event_4]
+    event_5 = 'test_device\t1/6/2016 8:00:01\t5/18/2016 9:01:02\ttest_event_type\ttest_event_notes'.split('\t')
+    event_6 = 'test_device\t1/6/2016 8:00:00\t1/6/2016 8:00:00\ttest_event_type\ttest_event_notes'.split('\t')
+    event_7 = 'test_device\t1/6/2016 0:00:00\t1/7/2016 0:00:00\ttest_event_type\ttest_event_notes'.split('\t')
+    event_8 = 'test_device\t1/6/2016 0:00:00\t1/5/2016 0:00:00\ttest_event_type\ttest_event_notes'.split('\t')
+    events = [event_1, event_2, event_3, event_4, event_5, event_6, event_7, event_8]
 
     add_devices(cur, devices)
     add_event_types(cur, event_types)

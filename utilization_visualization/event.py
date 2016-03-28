@@ -24,21 +24,16 @@ def split_event(event_to_split, split_type):
 
     if split_type == 'day':
         event_to_evaluate = event_to_split # why do I preserve event_to_split
-        # while event_to_evaluate.event_end > event_to_evaluate.end_of_day + timedelta(seconds=1):
         while event_to_evaluate.event_end > event_to_evaluate.end_of_day:
             split_events.append(Event(event_to_evaluate.device, event_to_evaluate.event_start, event_to_evaluate.end_of_day, event_to_evaluate.event_type, event_to_evaluate.event_notes))
             event_to_evaluate = Event(event_to_evaluate.device, event_to_evaluate.end_of_day + timedelta(seconds=1), event_to_evaluate.event_end, event_to_evaluate.event_type, event_to_evaluate.event_notes)
-        # if event_to_evaluate.duration != timedelta(0):
-        # if not event_to_evaluate.event_end == event_to_evaluate.beginning_of_day:
-        #     split_events.append(event_to_evaluate)
         split_events.append(event_to_evaluate)
     elif split_type == 'week':
         event_to_evaluate = event_to_split # why do I preserve event_to_split
-        while event_to_evaluate.event_end > event_to_evaluate.end_of_week + timedelta(seconds=1): # TODO test this
+        while event_to_evaluate.event_end > event_to_evaluate.end_of_week:
             split_events.append(Event(event_to_evaluate.device, event_to_evaluate.event_start, event_to_evaluate.end_of_week, event_to_evaluate.event_type, event_to_evaluate.event_notes))
             event_to_evaluate = Event(event_to_evaluate.device, event_to_evaluate.end_of_week + timedelta(seconds=1), event_to_evaluate.event_end, event_to_evaluate.event_type, event_to_evaluate.event_notes)
-        if event_to_evaluate.duration != timedelta(0):
-            split_events.append(event_to_evaluate)
+        split_events.append(event_to_evaluate)
 
     return split_events
 
@@ -62,7 +57,7 @@ class Event(object):
         try:
             self.event_start = event_start
             self.event_end = event_end
-            assert (self.event_end - self.event_start).total_seconds() > 0, 'event_start (%s) is not before event_end (%s)' % (self.event_start, self.event_end)
+            assert (self.event_end - self.event_start).total_seconds() >= 0, 'event_end (%s) precedes event_start (%s)' % (self.event_end, self.event_start)
         except:
             raise
 
@@ -154,15 +149,23 @@ if __name__ == "__main__":
     end_time = datetime(2015, 7, 19, 00, 0, 00)
 
     # to test problem of ending at day break and week break
-    # start_time = datetime(2015, 7, 18, 00, 00, 00)
-    # end_time = datetime(2015, 7, 19, 00, 0, 01)
+    start_time = datetime(2015, 7, 18, 00, 00, 00)
+    end_time = datetime(2015, 7, 19, 00, 0, 01)
+
+    # to test problem of the end preceding the start
+    start_time = datetime(2015, 7, 18, 00, 00, 00)
+    end_time = datetime(2015, 7, 17, 00, 0, 00)
+
+    # to test problem of the start at the same time as the end
+    start_time = datetime(2015, 7, 18, 00, 00, 00)
+    end_time = datetime(2015, 7, 18, 00, 0, 00)
 
     event = Event(device, start_time, end_time, event_type, event_notes)
     print event
-    # print event.is_within_single_day()
-    # print event.is_within_single_week()
-    # print event.beginning_of_day
-    # print event.beginning_of_week
+    print event.is_within_single_day()
+    print event.is_within_single_week()
+    print event.beginning_of_day
+    print event.beginning_of_week
 
     print
     print 'Split events by day...'
@@ -171,9 +174,9 @@ if __name__ == "__main__":
         for e in events:
             print e
 
-    # print
-    # print 'Split events by week...'
-    # if not event.is_within_single_week():
-    #     events = split_event(event, 'week')
-    #     for e in events:
-    #         print e
+    print
+    print 'Split events by week...'
+    if not event.is_within_single_week():
+        events = split_event(event, 'week')
+        for e in events:
+            print e
